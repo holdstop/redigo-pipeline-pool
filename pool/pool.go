@@ -27,6 +27,7 @@ type pool struct {
 
 	rand *rand.Rand
 	lastReconnectFailedTime time.Time
+	randMutex sync.Mutex
 	reconnectMutex sync.Mutex
 	closeRWMutex sync.RWMutex
 
@@ -88,7 +89,10 @@ func (p *pool) Do(cmd string, args ...interface{}) (interface{}, error) {
 	ch := make(chan replyObj)
 	defer close(ch)
 
+	p.randMutex.Lock()
 	i := p.rand.Intn(p.connSize)
+	p.randMutex.Unlock()
+
 	p.mutexes[i].Lock()
 
 	err := p.check(i)
@@ -121,7 +125,10 @@ func (p *pool) DoMulti(multi Multi) (interface{}, error) {
 	ch := make(chan replyObj)
 	defer close(ch)
 
+	p.randMutex.Lock()
 	i := p.rand.Intn(p.connSize)
+	p.randMutex.Unlock()
+
 	p.mutexes[i].Lock()
 
 	err := p.check(i)
@@ -158,7 +165,10 @@ func (p *pool) DoScript(script *redis.Script, keysAndArgs ...interface{}) (inter
 	ch := make(chan replyObj)
 	defer close(ch)
 
+	p.randMutex.Lock()
 	i := p.rand.Intn(p.connSize)
+	p.randMutex.Unlock()
+
 	p.mutexes[i].Lock()
 
 	err := p.check(i)
@@ -175,7 +185,10 @@ func (p *pool) DoScript(script *redis.Script, keysAndArgs ...interface{}) (inter
 	reply := <-ch
 
 	if nil != reply.err && strings.HasPrefix(reply.err.Error(), "NOSCRIPT ") {
+		p.randMutex.Lock()
 		i := p.rand.Intn(p.connSize)
+		p.randMutex.Unlock()
+
 		p.mutexes[i].Lock()
 
 		err := p.check(i)
@@ -235,7 +248,7 @@ func (p *pool) connect(i int) error {
 	}
 
 	p.conns[i] = conn
-	p.doChs[i] = make(chan cmdAndChObj, p.maxWaitingSize)
+	p.doChs[i] = make(chan cmdAndChObj, p.maxPendingSize)
 	p.replyChs[i] = make(chan chan replyObj, p.maxWaitingSize)
 	go loopReceive(p.conns[i], p.replyChs[i])
 	go loopSend(p.conns[i], p.doChs[i], p.replyChs[i], p.delay, p.maxPendingSize)

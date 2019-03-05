@@ -42,6 +42,9 @@ func loopReceive(conn redis.Conn, replyCh chan chan replyObj) {
 }
 
 func loopSend(conn redis.Conn, doCh chan cmdAndChObj, replyCh chan chan replyObj, delay time.Duration, maxPendingSize int) {
+	timer := time.NewTimer(delay)
+	timerFired := false
+
 	OuterFor:
 	for {
 		obj, ok := <-doCh
@@ -59,7 +62,10 @@ func loopSend(conn redis.Conn, doCh chan cmdAndChObj, replyCh chan chan replyObj
 			continue OuterFor
 		}
 
-		delayFlag := true
+		if !timer.Stop() && !timerFired {
+			<-timer.C
+		}
+		timer.Reset(delay)
 
 		InnerFor:
 		for {
@@ -79,14 +85,10 @@ func loopSend(conn redis.Conn, doCh chan cmdAndChObj, replyCh chan chan replyObj
 					flush(conn, chs, replyCh)
 					break InnerFor
 				}
-			default:
-				if delayFlag && delay > 0 {
-					time.Sleep(delay)
-					delayFlag = false
-				} else {
-					flush(conn, chs, replyCh)
-					break InnerFor
-				}
+			case <-timer.C:
+				timerFired = true
+				flush(conn, chs, replyCh)
+				break InnerFor
 			}
 		}
 	}

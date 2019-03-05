@@ -48,8 +48,8 @@ p, err := pool.NewPool(
 	}, // Function return a Redis connection.
 	5, // Number of Redis connections in the pool.
 	1 * time.Second, // Reconnect interval when connection encountered non-recoverable error.
-	1 * time.Millisecond, // The longest delay time waiting for the number of buffered requests to be maxPendingSize before flush to the Redis server.
-	100, // Maximum number of requests buffered before flush to the Redis server. (per connection)
+	100 * time.Microsecond, // The longest delay time waiting for the number of buffered requests to be maxPendingSize before flush to the Redis server.
+	50, // Maximum number of requests buffered before flush to the Redis server. (per connection)
 	500, //Maximum number of unreturned requests waited before send new requests. (per connection)
 )
 ```
