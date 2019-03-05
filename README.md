@@ -1,9 +1,9 @@
-RedigoPiplinePool
+Redigo-Pipline-Pool
 ======
 
 Simple Go Redis pipline pool client base on [Redigo](https://github.com/gomodule/redigo).
 
-This is a connectionless Redis pool. It handles all connection operations by itself. You don't need to deal with Redis connection.
+This is a connection free Redis pool. It handles all connection operations by itself. You don't need to deal with Redis connection.
 
 This pool use pipline to execute Redis commands. Multiple commands can execute on one connection at the same time. So you don't need too many connections.
 
@@ -17,20 +17,20 @@ You can use one connection with pipline to do the same thing. But multiple conne
 Installation
 ------------
 
-Install redigoPiplinePool using the "go get" command:
+Install Redigo-Pipline-Pool using the "go get" command:
 
 ```
-go get github.com/holdstop/redigoPiplinePool/pool
+go get github.com/holdstop/redigo-pipline-pool/pool
 ```
 
 Usage
 ------------
 
-Import RedigoPiplinePool and Redigo.
+Import Redigo-Pipline-Pool and Redigo.
 
 ```go
 import (
-	"github.com/holdstop/redigoPiplinePool/pool"
+	"github.com/holdstop/redigo-pipline-pool/pool"
 	"github.com/gomodule/redigo/redis"
 )
 ```
