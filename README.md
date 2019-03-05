@@ -7,7 +7,7 @@ This is a connection free Redis pool. It handles all connection operations by it
 
 This pool use pipline to execute Redis commands. Multiple commands can execute on one connection at the same time. So you don't need too many connections.
 
-You can use `dely` and `maxPendingSize` to compress multiple command into fewer TCP packages. This can reduce network traffic.
+You can use `delay` and `maxPendingSize` to compress multiple command into fewer TCP packages. This can reduce network traffic.
 
 Why pool?
 ------------
