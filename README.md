@@ -54,7 +54,7 @@ p, err := pool.NewPool(
 )
 ```
 
-Use Do and DoScript to execute Redis commands.
+Use Do and DoScript to execute Redis commands and scripts.
 
 ```go
 Do(cmd string, args ...interface{}) (interface{}, error)
