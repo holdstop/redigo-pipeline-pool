@@ -1,18 +1,18 @@
 Redigo-Pipeline-Pool
 ======
 
-Simple Go Redis pipeline pool client base on [Redigo](https://github.com/gomodule/redigo).
+Simple Go Redis pipeline pool client based on [Redigo](https://github.com/gomodule/redigo).
 
-This is a connection free Redis pool. It handles all connection operations by itself. You don't need to deal with Redis connection.
+This is a connection free Redis pool. It handles all operations of connections by itself. You don't need to deal with Redis connections.
 
-This pool use pipeline to execute Redis commands. Multiple commands can execute on one connection at the same time. So you don't need too many connections.
+This pool uses pipeline to execute Redis commands. Multiple commands can execute on one connection at the same time. So you don't need too many connections.
 
-You can use `delay` and `maxPendingSize` to compress multiple command into fewer TCP packages. This can reduce network traffic.
+You can use `delay` and `maxPendingSize` to compress multiple commands into fewer TCP packages. This can reduce network traffic.
 
 Why pool?
 ------------
 
-You can use one connection with pipeline to do the same thing. But multiple connections can help you use multiple cores of CPU and multi-queue of network interface controller to improve performance.
+You can use only one connection with pipeline to do the same things. But multiple connections can help you use multiple cores of CPU and multi-queue of network interface controller to improve performance.
 
 Installation
 ------------
@@ -45,9 +45,9 @@ func NewPool(dial func() (redis.Conn, error), connSize int, reconnectInterval ti
 p, err := pool.NewPool(
 	func() (redis.Conn, error) {
 		return redis.Dial("tcp", "127.0.0.1:6379")
-	}, // Function return a Redis connection.
+	}, // Function returns a Redis connection.
 	5, // Number of Redis connections in the pool.
-	1 * time.Second, // Reconnect interval when connection encountered non-recoverable error.
+	1 * time.Second, // Reconnect interval when connection encountered unrecoverable error.
 	100 * time.Microsecond, // The longest delay time waiting for the number of buffered requests to be maxPendingSize before flush to the Redis server.
 	50, // Maximum number of requests buffered before flush to the Redis server. (per connection)
 	500, //Maximum number of unreturned requests waited before send new requests. (per connection)
@@ -97,4 +97,4 @@ p.Close()
 Supported commands
 ------------
 
-Supports commands group `Geo` `Hashes` `Keys` `HyperLogLog` `Lists` `Sets` `Sorted Sets` `Strings` on [https://redis.io/commands](https://redis.io/commands), without command `WAIT` `MIGRATE` in group `Keys`.
+Supports command groups `Geo` `Hashes` `Keys` `HyperLogLog` `Lists` `Sets` `Sorted Sets` `Strings` on [https://redis.io/commands](https://redis.io/commands), without commands `WAIT` `MIGRATE` in group `Keys`.
