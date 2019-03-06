@@ -1,36 +1,36 @@
-Redigo-Pipline-Pool
+Redigo-Pipeline-Pool
 ======
 
-Simple Go Redis pipline pool client base on [Redigo](https://github.com/gomodule/redigo).
+Simple Go Redis pipeline pool client base on [Redigo](https://github.com/gomodule/redigo).
 
 This is a connection free Redis pool. It handles all connection operations by itself. You don't need to deal with Redis connection.
 
-This pool use pipline to execute Redis commands. Multiple commands can execute on one connection at the same time. So you don't need too many connections.
+This pool use pipeline to execute Redis commands. Multiple commands can execute on one connection at the same time. So you don't need too many connections.
 
 You can use `delay` and `maxPendingSize` to compress multiple command into fewer TCP packages. This can reduce network traffic.
 
 Why pool?
 ------------
 
-You can use one connection with pipline to do the same thing. But multiple connections can help you use multiple cores of CPU and multi-queue of network interface controller to improve performance.
+You can use one connection with pipeline to do the same thing. But multiple connections can help you use multiple cores of CPU and multi-queue of network interface controller to improve performance.
 
 Installation
 ------------
 
-Install Redigo-Pipline-Pool using the "go get" command:
+Install Redigo-Pipeline-Pool using the "go get" command:
 
 ```
-go get github.com/holdstop/redigo-pipline-pool/pool
+go get github.com/holdstop/redigo-pipeline-pool/pool
 ```
 
 Usage
 ------------
 
-Import Redigo-Pipline-Pool and Redigo.
+Import Redigo-Pipeline-Pool and Redigo.
 
 ```go
 import (
-	"github.com/holdstop/redigo-pipline-pool/pool"
+	"github.com/holdstop/redigo-pipeline-pool/pool"
 	"github.com/gomodule/redigo/redis"
 )
 ```
